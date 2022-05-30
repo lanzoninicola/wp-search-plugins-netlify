@@ -15,16 +15,16 @@ const handler: Handler = async (event, context) => {
 
   const firstPlugin = plugins[0];
 
-  const firestoreResponse = await firestoreService.add(
-    "wp-plugins",
-    firstPlugin
-  );
+  // const firestoreResponse = await firestoreService.add(
+  //   "wp-plugins",
+  //   firstPlugin
+  // );
 
   // console.log('urra', firestoreResponse);
 
   return {
     statusCode: 200,
-    body: JSON.stringify(firestoreResponse),
+    body: JSON.stringify(firstPlugin),
   };
 };
 
