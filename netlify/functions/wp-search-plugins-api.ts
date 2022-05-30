@@ -1,16 +1,25 @@
+// https://api.wordpress.org/plugins/info/1.2/?action=query_plugins
 // https://github.com/marketplace/actions/http-request-action
 // https://jasonet.co/posts/scheduled-actions/
 // https://prismatic-yeot-e7f71f.netlify.app/.netlify/functions/wp-search-plugins-api
 
 import { Handler } from "@netlify/functions";
 import fetch from "node-fetch";
+import { WpPlugin, WpPluginAPIResponse } from "../../src/interfaces";
+import firestoreService from "../../src/lib/firebase/firestore.service";
 
 const handler: Handler = async (event, context) => {
-  const plugins = await getWordpressPlugins();
+  const pluginsResponse: WpPluginAPIResponse | {} = await getWordpressPlugins();
+
+  let plugins: WpPlugin[] = pluginsResponse["plugins"] || [];
+
+  const firstPlugin = plugins[0];
+
+  firestoreService.add("wp-plugins", firstPlugin);
 
   return {
     statusCode: 200,
-    body: JSON.stringify(plugins),
+    body: JSON.stringify(pluginsResponse),
   };
 };
 
