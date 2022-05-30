@@ -5,8 +5,8 @@
 
 import { Handler } from "@netlify/functions";
 import fetch from "node-fetch";
-import { WpPlugin, WpPluginAPIResponse } from "../../src/interfaces";
-import firestoreService from "../../src/lib/firebase/firestore.service";
+import { WpPlugin, WpPluginAPIResponse } from "../../interfaces";
+import firestoreService from "../../lib/firebase/firestore.service";
 
 const handler: Handler = async (event, context) => {
   const pluginsResponse: WpPluginAPIResponse | {} = await getWordpressPlugins();
@@ -19,6 +19,8 @@ const handler: Handler = async (event, context) => {
     "wp-plugins",
     firstPlugin
   );
+
+  // console.log('urra', firestoreResponse);
 
   return {
     statusCode: 200,

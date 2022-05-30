@@ -5,3 +5,6 @@
   from = "/*"
   to = "/.netlify/functions/wp-search-plugins-api"
   status = 301
+
+[functions]
+  directory = "netlify/functions/"
