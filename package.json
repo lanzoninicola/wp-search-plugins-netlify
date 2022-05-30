@@ -10,8 +10,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@netlify/functions": "^1.0.0",
     "firebase": "^9.8.2",
-    "firebase-admin": "^10.2.0"
+    "firebase-admin": "^10.2.0",
+    "node-fetch": "^3.2.4"
   },
   "devDependencies": {
     "typescript": "^4.7.2"

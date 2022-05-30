@@ -2,7 +2,10 @@
 // https://jasonet.co/posts/scheduled-actions/
 // https://prismatic-yeot-e7f71f.netlify.app/.netlify/functions/wp-search-plugins-api
 
-exports.handler = async function (event, context) {
+import { Handler } from "@netlify/functions";
+import fetch from "node-fetch";
+
+const handler: Handler = async (event, context) => {
   const plugins = await getWordpressPlugins();
 
   return {
@@ -22,6 +25,8 @@ async function getWordpressPlugins() {
   };
   return fetch(url, options)
     .then((response) => response.json())
-    .then((json) => json.plugins)
+    .then((json) => json)
     .catch((error) => console.log(error));
 }
+
+export { handler };
