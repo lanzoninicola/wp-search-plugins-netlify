@@ -1,3 +1,4 @@
+# https://docs.netlify.com/configure-builds/file-based-configuration/
 [build]
   base = "src/"
 
@@ -10,4 +11,5 @@
   directory = "netlify/functions/"
   node_bundler = "esbuild"
   external_node_modules = ["node-fetch"]
-  included_files = ["src/**"]
+  # https://www.netlify.com/blog/2021/08/12/how-to-include-files-in-netlify-serverless-functions/
+  included_files = ["types/**", "lib/**"]
