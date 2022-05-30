@@ -1,14 +1,4 @@
-import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  Firestore,
-  getDoc,
-  getDocs,
-  updateDoc,
-} from "firebase/firestore";
-
+import db from "./firestore.server";
 import {
   FirestoreAdditionSuccessResponse,
   FirestoreCollectionResponse,
@@ -19,8 +9,8 @@ import {
   FirestoreSuccessResponse,
 } from "./firestore.interfaces";
 
-export default class FirestoreService implements FirestoreCRUDService {
-  constructor(private db: Firestore) {}
+class FirestoreService implements FirestoreCRUDService {
+  constructor(private db: FirebaseFirestore.Firestore) {}
 
   /**
    * @description Return all documents in a collection
@@ -45,8 +35,8 @@ export default class FirestoreService implements FirestoreCRUDService {
   async getAll(collectionName: string): Promise<FirestoreCollectionResponse> {
     let result: FirestoreDocument[] = [];
 
-    const querySnapshot = await getDocs(collection(this.db, collectionName));
-    querySnapshot.forEach((doc) => {
+    const snapshot = await this.db.collection(collectionName).get();
+    snapshot.forEach((doc) => {
       const data = doc.data();
       result = [...result, data];
     });
@@ -69,13 +59,13 @@ export default class FirestoreService implements FirestoreCRUDService {
     collectionName: string,
     documentId: string
   ): Promise<FirestoreDocumentResponse> {
-    const docRef = doc(this.db, collectionName, documentId);
-    const docSnap = await getDoc(docRef);
+    const docRef = this.db.collection(collectionName);
+    const docSnap = await docRef.select(documentId).get();
 
-    if (docSnap.exists()) {
+    if (!docSnap.empty) {
       return {
         ok: true,
-        payload: docSnap.data(),
+        payload: docSnap.docs[0].data(),
       };
     } else {
       return {
@@ -102,11 +92,12 @@ export default class FirestoreService implements FirestoreCRUDService {
     data: { [key: string]: any }
   ): Promise<FirestoreAdditionSuccessResponse | FirestoreErrorResponse> {
     try {
-      const docRef = await addDoc(collection(this.db, collectionName), data);
+      const docRef = this.db.collection(collectionName);
+      const docSnap = await docRef.add(data);
 
       return {
         ok: true,
-        payload: docRef.id,
+        payload: docSnap.id,
       };
     } catch (e) {
       return {
@@ -116,6 +107,7 @@ export default class FirestoreService implements FirestoreCRUDService {
     }
   }
 
+  // TODO: Implement update
   /**
    * @description Update a document by id
    *
@@ -134,11 +126,8 @@ export default class FirestoreService implements FirestoreCRUDService {
     updatedData: any
   ): Promise<FirestoreSuccessResponse | FirestoreErrorResponse> {
     try {
-      const docRef = doc(this.db, collectionName, documentId);
-
-      await updateDoc(docRef, {
-        ...updatedData,
-      });
+      // const docRef = this.db.collection(collectionName).doc;
+      // await updateDoc(docRef.get(), updatedData);
 
       return {
         ok: true,
@@ -167,7 +156,7 @@ export default class FirestoreService implements FirestoreCRUDService {
     documentId: string
   ): Promise<FirestoreSuccessResponse | FirestoreErrorResponse> {
     try {
-      await deleteDoc(doc(this.db, collectionName, documentId));
+      await this.db.collection(collectionName).doc(documentId).delete();
       return {
         ok: true,
       };
@@ -181,6 +170,7 @@ export default class FirestoreService implements FirestoreCRUDService {
 
   /**
    * @description Delete all document in a collection
+   * https://firebase.google.com/docs/firestore/manage-data/delete-data#collections
    *
    * @param {string} collectionName - The name of the Firestore collection
    * @param {string} documentId - The document id to update
@@ -190,16 +180,12 @@ export default class FirestoreService implements FirestoreCRUDService {
    * - *Success response*: {ok: boolean}
    * - *Error response*: {ok: false, error: any}
    */
-  async deleteAll(
-    collectionName: string
-  ): Promise<FirestoreSuccessResponse | FirestoreErrorResponse> {
+  async deleteAll(collectionPath, batchSize: number = 20) {
+    const collectionRef = this.db.collection(collectionPath);
+    const query = collectionRef.orderBy("__name__").limit(batchSize);
+
     try {
-      const querySnapshot = await getDocs(collection(this.db, collectionName));
-
-      querySnapshot.forEach(async (document) => {
-        await deleteDoc(doc(this.db, collectionName, document.id));
-      });
-
+      await this._deleteQueryBatch(query);
       return {
         ok: true,
       };
@@ -210,4 +196,31 @@ export default class FirestoreService implements FirestoreCRUDService {
       };
     }
   }
+
+  private async _deleteQueryBatch(query) {
+    const snapshot = await query.get();
+
+    const batchSize = snapshot.size;
+    if (batchSize === 0) {
+      // When there are no documents left, we are done
+      return;
+    }
+
+    // Delete documents in a batch
+    const batch = this.db.batch();
+    snapshot.docs.forEach((doc) => {
+      batch.delete(doc.ref);
+    });
+    await batch.commit();
+
+    // Recurse on the next process tick, to avoid
+    // exploding the stack.
+    process.nextTick(() => {
+      this._deleteQueryBatch(query);
+    });
+  }
 }
+
+// Initialize the FirestoreService
+const firestoreService = new FirestoreService(db);
+export default firestoreService;
