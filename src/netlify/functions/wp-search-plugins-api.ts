@@ -6,7 +6,7 @@
 import { Handler } from "@netlify/functions";
 import fetch from "node-fetch";
 import { WpPlugin, WpPluginAPIResponse } from "../../types";
-import firestoreService from "../../lib/firebase/firestore.service";
+import firestoreService from "../../lib/firebase/firestore-service";
 
 const handler: Handler = async (event, context) => {
   const pluginsResponse: WpPluginAPIResponse | {} = await getWordpressPlugins();
