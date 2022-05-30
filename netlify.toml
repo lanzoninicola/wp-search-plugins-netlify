@@ -1,6 +1,7 @@
 # https://docs.netlify.com/configure-builds/file-based-configuration/
 [build]
-  base = "src/"
+  # This is where we will look for package.json/.nvmrc/etc.
+  base = "/"
 
 [[redirects]]
   from = "/*"
@@ -8,7 +9,7 @@
   status = 301
 
 [functions]
-  directory = "netlify/functions/"
+  directory = "src/netlify/functions/"
   node_bundler = "esbuild"
   external_node_modules = ["node-fetch", "firebase-admin/app", "firebase-admin/firestore"]
   # https://www.netlify.com/blog/2021/08/12/how-to-include-files-in-netlify-serverless-functions/
