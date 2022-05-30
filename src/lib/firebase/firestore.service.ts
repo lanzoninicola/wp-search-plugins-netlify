@@ -1,4 +1,3 @@
-import db from "./firestore.server";
 import {
   FirestoreAdditionSuccessResponse,
   FirestoreCollectionResponse,
@@ -8,6 +7,7 @@ import {
   FirestoreErrorResponse,
   FirestoreSuccessResponse,
 } from "./firestore.interfaces";
+import db from "./firestore.server";
 
 class FirestoreService implements FirestoreCRUDService {
   constructor(private db: FirebaseFirestore.Firestore) {}
