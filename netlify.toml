@@ -5,10 +5,10 @@
   # This is where we will look for package.json/.nvmrc/etc.
   base = "/"
 
-[[redirects]]
-  from = "/*"
-  to = "/.netlify/functions/wp-search-plugins-api"
-  status = 301
+# [[redirects]]
+  # from = "/*"
+  # to = "/.netlify/functions/wp-search-plugins-api"
+  # status = 301
 
 [functions]
   directory = "src/netlify/functions/"
