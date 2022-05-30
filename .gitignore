@@ -1,5 +1,5 @@
 node_modules
 .env
 
-/src/lib/firebase/*
-! /src/lib/firebase/firebase-wp-search-plugins
+firebase-wp-search-plugins.json
+
