@@ -11,6 +11,6 @@
 [functions]
   directory = "src/netlify/functions/"
   node_bundler = "esbuild"
-  external_node_modules = ["node-fetch", "firebase-admin/app", "firebase-admin/firestore"]
+  # external_node_modules = ["node-fetch", "firebase-admin/app", "firebase-admin/firestore"]
   # https://www.netlify.com/blog/2021/08/12/how-to-include-files-in-netlify-serverless-functions/
   # included_files = ["src/types/**", "src/lib/**"]
