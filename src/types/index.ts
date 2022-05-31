@@ -1,3 +1,3 @@
-import { WpPluginAPIResponse, WpPlugin } from "./wp-plugin-api";
+import { WpPluginAPIPageResponse, WpPlugin } from "./wp-plugins-api";
 
-export { WpPluginAPIResponse, WpPlugin };
+export { WpPluginAPIPageResponse, WpPlugin };
