@@ -1,3 +1,5 @@
+# https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
+
 name: Wordpress Plugin Loader
 on:
   schedule:
@@ -8,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Start Logging
-        run: echo "Starting the loader request"
+      run: echo "Starting the loader request"
     - name: Run loader
       uses: fjogeleit/http-request-action@v1
       with:
@@ -16,4 +18,4 @@ jobs:
         method: 'POST'
         data: '{"code": "123456"}'
     - name: End Logging
-        run: echo "The loader request has ended"
+      run: echo "The loader request has ended"
