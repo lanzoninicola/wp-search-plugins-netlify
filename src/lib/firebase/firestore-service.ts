@@ -107,6 +107,39 @@ class FirestoreService implements FirestoreCRUDService {
     }
   }
 
+  async addBulk<T>(collectionName: string, data: T[]): Promise<any> {
+    // https://firebase.google.com/docs/firestore/manage-data/transactions
+    // Each transaction or batch of writes can write to a maximum of 500 documents
+    if (data.length > 300) {
+      throw new Error("Too many documents to add. Limit is 300");
+    }
+
+    // Get a new write batch
+    const batch = db.batch();
+
+    const collectionRef = this.db.collection(collectionName);
+
+    // Add documents to the batch
+    data.forEach((doc) => {
+      // TODO: here I can calculate the rating basing on the alghoritm
+
+      batch.set(collectionRef.doc(), doc);
+    });
+
+    try {
+      await batch.commit();
+
+      return {
+        ok: true,
+      };
+    } catch (e) {
+      return {
+        ok: false,
+        error: e,
+      };
+    }
+  }
+
   // TODO: Implement update
   /**
    * @description Update a document by id
@@ -182,7 +215,7 @@ class FirestoreService implements FirestoreCRUDService {
    */
   async deleteAll(collectionPath, batchSize: number = 20) {
     const collectionRef = this.db.collection(collectionPath);
-    const query = collectionRef.orderBy("__name__").limit(batchSize);
+    const query = collectionRef.limit(batchSize);
 
     try {
       await this._deleteQueryBatch(query);
@@ -197,7 +230,9 @@ class FirestoreService implements FirestoreCRUDService {
     }
   }
 
-  private async _deleteQueryBatch(query) {
+  private async _deleteQueryBatch(
+    query: FirebaseFirestore.Query<FirebaseFirestore.DocumentData>
+  ) {
     const snapshot = await query.get();
 
     const batchSize = snapshot.size;
@@ -218,6 +253,12 @@ class FirestoreService implements FirestoreCRUDService {
     process.nextTick(() => {
       this._deleteQueryBatch(query);
     });
+  }
+
+  private async _addQueryBatch(query) {
+    const snapshot = await query.get();
+
+    console.log(snapshot.size);
   }
 }
 

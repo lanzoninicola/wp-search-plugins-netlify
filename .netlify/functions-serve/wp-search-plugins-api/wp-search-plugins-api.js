@@ -1,0 +1,1 @@
+module.exports = require('./src/src/netlify/functions/wp-search-plugins-api.js')
