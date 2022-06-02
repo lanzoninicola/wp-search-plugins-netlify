@@ -1,4 +1,4 @@
-name: 'Run Plugin Loader'
+name: 'Auto Build'
 on:
   schedule:
     - cron: '*/5 * * * *'
