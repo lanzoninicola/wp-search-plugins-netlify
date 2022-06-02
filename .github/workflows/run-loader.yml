@@ -1,7 +1,7 @@
-name: 'Run Plugin Loader'
-  on:
-    schedule:
-      - cron: "*/5 * * * *"
+name: "Run Plugin Loader"
+on:
+  schedule:
+    - cron: "*/5 * * * *"
 jobs:
   deployment:
     runs-on: ubuntu-latest
