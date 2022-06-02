@@ -3,7 +3,7 @@
 name: Wordpress Plugin Loader
 on:
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: '*/5 * * * *'
 
 jobs:
   test_schedule:
