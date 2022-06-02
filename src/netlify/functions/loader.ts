@@ -11,15 +11,15 @@ import getWordpressPluginsAPI from "../../factories/wp-plugins-api";
 import SupabaseService from "../../lib/supabase/supabase-service";
 
 const handler: Handler = async (event, context) => {
-  const supabaseService = new SupabaseService();
+  // const supabaseService = new SupabaseService();
 
-  let currentPage = 1;
-  // let allPlugins: WpPlugin[] = [];
+  // let currentPage = 1;
+  // // let allPlugins: WpPlugin[] = [];
 
-  const wpPluginsAPI = getWordpressPluginsAPI();
-  const pluginsResponse = await wpPluginsAPI.findPaginated({
-    page: currentPage,
-  });
+  // const wpPluginsAPI = getWordpressPluginsAPI();
+  // const pluginsResponse = await wpPluginsAPI.findPaginated({
+  //   page: currentPage,
+  // });
 
   // if (!pluginsResponse.ok) {
   //   return {
@@ -27,9 +27,9 @@ const handler: Handler = async (event, context) => {
   //     body: JSON.stringify(pluginsResponse.payload),
   //   };
   // }
-  const { payload } = pluginsResponse;
+  // const { payload } = pluginsResponse;
 
-  const response = await supabaseService.addBulk(payload["plugins"]);
+  // const response = await supabaseService.addBulk(payload["plugins"]);
 
   // console.log(response);
 
