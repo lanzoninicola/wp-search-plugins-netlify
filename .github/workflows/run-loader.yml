@@ -1,4 +1,4 @@
-name: Run plugin loader
+name: 'WP Plugins Loader'
 on:
   schedule:
     - cron: '*/5 * * * *'
